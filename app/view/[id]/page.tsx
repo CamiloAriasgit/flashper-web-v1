@@ -109,14 +109,15 @@ export default async function PublicQuotePage({
                 </div>
 
                 {/* Footer Branding */}
-                <div className="p-6 bg-slate-50/50 border-t border-slate-50 flex items-center justify-center gap-2">
+                <div className="p-6 bg-slate-50/50 border-t border-slate-50 flex items-center justify-center gap-1">
                     <span className="text-[9px] text-slate-400 uppercase font-bold tracking-widest">Tecnología de gestión por</span>
-                    <div className='font-normal text-[12px]'>
-                        <span className="font-bold text-neutral-700 tracking-tight italic">Flash</span><span className='font-bold text-blue-600 tracking-tight italic'>per</span>
+                    <div className="flex items-center italic tracking-tighter select-none text-[12px]">
+                        <span className="font-bold text-slate-900">Flash</span>
+                        <span className="font-bold text-blue-600">Per</span>
                     </div>
                 </div>
             </div>
-            
+
             <p className="mt-8 text-slate-400 text-[11px] font-medium italic">
                 ID de Seguridad: {id.split('-')[0]}...{id.split('-').pop()}
             </p>
