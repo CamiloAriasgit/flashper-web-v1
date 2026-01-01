@@ -112,7 +112,7 @@ export default function DashboardClient({ initialQuotes }: { initialQuotes: any[
 
 function StatCard({ label, val, sub, icon: Icon, color, bg }: any) {
     return (
-        <div className="bg-white p-4 sm:p-6 rounded-[1.5rem] border border-slate-200/60 shadow-[0_2px_10px_rgba(0,0,0,0.02)] flex flex-col justify-between h-full group hover:border-blue-200 transition-all">
+        <div className="bg-white p-4 sm:p-6 rounded-[1.5rem] border border-slate-200/60 shadow-[0_2px_10px_rgba(0,0,0,0.02)] flex flex-col justify-between h-full group hover:border-cyan-200 transition-all">
             <div className="flex items-center justify-between mb-4">
                 <div className={`w-8 h-8 sm:w-10 sm:h-10 ${bg} ${color} rounded-xl flex items-center justify-center`}>
                     <Icon size={18} strokeWidth={2} />

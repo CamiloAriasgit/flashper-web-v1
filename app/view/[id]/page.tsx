@@ -145,7 +145,7 @@ export default async function PublicQuotePage({
                             </form>
                         ) : (
                             <div className="space-y-6">
-                                <div className="flex flex-col items-center justify-center py-4 text-center">
+                                <div className="bg-emerald-50 p-8 rounded-2xl border border-emerald-100 flex flex-col items-center justify-center py-4 text-center">
                                     <div className="w-16 h-16 bg-emerald-50 text-emerald-500 rounded-full flex items-center justify-center mb-4 border-4 border-white shadow-sm">
                                         <CheckCircle2 size={32} strokeWidth={2.5} />
                                     </div>
