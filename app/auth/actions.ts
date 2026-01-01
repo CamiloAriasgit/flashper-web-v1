@@ -2,7 +2,7 @@
 'use server'
 
 import { createClient } from '@/utils/supabase/server'
-import { createClient as createSupabaseClient } from '@supabase/supabase-js' // Importación directa para el cliente admin
+import { createClient as createSupabaseClient } from '@supabase/supabase-js'
 import { redirect } from 'next/navigation'
 import { Resend } from 'resend'
 
@@ -19,6 +19,7 @@ export async function signup(formData: FormData) {
   const password = formData.get('password') as string
   const orgName = formData.get('orgName') as string
 
+  // 1. Crear el usuario en Auth
   const { data: authData, error: authError } = await supabase.auth.signUp({
     email,
     password,
@@ -29,6 +30,7 @@ export async function signup(formData: FormData) {
     return redirect('/register?error=auth-failed')
   }
 
+  // 2. Crear la Organización
   const { data: orgData, error: orgError } = await supabase
     .from('organizations')
     .insert([{ name: orgName }])
@@ -40,6 +42,7 @@ export async function signup(formData: FormData) {
     return redirect('/register?error=org-failed')
   }
 
+  // 3. Crear el Perfil vinculado
   const { error: profileError } = await supabase.from('profiles').insert([
     {
       id: authData.user.id,
@@ -59,12 +62,12 @@ export async function signup(formData: FormData) {
 
 /**
  * FIRMA DE COTIZACIÓN
- * Actualiza estado y envía notificación por email usando Service Role
+ * Actualiza estado y envía notificaciones (Telegram/Make y Email)
  */
 export async function signQuote(quoteId: string) {
-  // 1. Cliente normal para la actualización
   const supabase = await createClient()
 
+  // 1. Actualizar estado de la cotización
   const { data: quote, error: updateError } = await supabase
     .from('quotes')
     .update({ status: 'signed' })
@@ -77,12 +80,27 @@ export async function signQuote(quoteId: string) {
     return { success: false }
   }
 
-  // 2. Intentar enviar notificación con Cliente Admin
+  // 2. NOTIFICACIÓN A TELEGRAM (Vía Make Webhook)
   try {
-    // Creamos el cliente con la Service Role Key para saltar restricciones de privacidad
+    await fetch('https://hook.us2.make.com/vhb6ce9sdir7g7kj6f88x8radgxdy', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        nombre_cliente: quote.client_name,
+        valor: quote.total_amount.toLocaleString('es-CO'),
+        empresa: quote.organizations.name,
+        id_propuesta: quote.id
+      })
+    });
+  } catch (e) {
+    console.error("Error enviando a Make/Telegram:", e);
+  }
+
+  // 3. NOTIFICACIÓN POR EMAIL (Opcional/Backup)
+  try {
     const supabaseAdmin = createSupabaseClient(
         process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.SUPABASE_SERVICE_ROLE_KEY! // ¡Esta es la clave maestra!
+        process.env.SUPABASE_SERVICE_ROLE_KEY!
     )
 
     const { data: profile } = await supabase
@@ -92,11 +110,7 @@ export async function signQuote(quoteId: string) {
       .single()
 
     if (profile) {
-      // Ahora sí tendremos permiso para obtener el email
-      const { data: authUser, error: authError } = await supabaseAdmin.auth.admin.getUserById(profile.id)
-      
-      if (authError) throw authError;
-
+      const { data: authUser } = await supabaseAdmin.auth.admin.getUserById(profile.id)
       const ownerEmail = authUser.user?.email
 
       if (ownerEmail) {
@@ -112,14 +126,13 @@ export async function signQuote(quoteId: string) {
                 <p style="margin: 0; color: #64748b; font-size: 12px;">VALOR TOTAL</p>
                 <p style="margin: 5px 0 0 0; font-size: 24px; font-weight: bold; color: #2563eb;">$${quote.total_amount.toLocaleString('es-CO')}</p>
               </div>
-              <p style="font-size: 11px; color: #94a3b8;">ID: ${quote.id}</p>
             </div>
           `
         })
       }
     }
   } catch (err) {
-    console.error("Error en el proceso de notificación:", err)
+    console.error("Error en proceso de email:", err)
   }
 
   return { success: true }
