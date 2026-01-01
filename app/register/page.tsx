@@ -15,7 +15,7 @@ export default function RegisterPage() {
           {/* Header */}
           <div className="text-center mb-10">
             <h1 className="text-3xl text-slate-800 tracking-tight mb-2">
-              Únete a <span className="font-bold text-neutral-700 tracking-tight italic">Flash</span><span className='font-bold text-blue-600 tracking-tight italic'>per</span>
+              Únete a <span className="font-bold text-neutral-700 tracking-tight italic">Flash</span><span className='font-bold text-blue-600 tracking-tight italic'>Per</span>
             </h1>
             <p className="text-slate-500 text-sm">
               La plataforma para digitalizar tus cobros y firmas en segundos.
