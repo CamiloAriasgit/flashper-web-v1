@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { Plus, DollarSign, FileText, CircleDot, TrendingUp, ArrowUpRight } from 'lucide-react'
+import { Plus, DollarSign, FileText, CircleDot,CheckCircle2, TrendingUp, ArrowUpRight } from 'lucide-react'
 import QuoteDetailSheet from '@/components/QuoteDetailSheet'
 
 export default function DashboardClient({ initialQuotes }: { initialQuotes: any[] }) {
@@ -13,10 +13,12 @@ export default function DashboardClient({ initialQuotes }: { initialQuotes: any[
     const signedQuotes = initialQuotes.filter(q => q.status === 'signed')
     const potentialMoney = pendingQuotes.reduce((acc, q) => acc + (Number(q.total_amount) || 0), 0)
     const earnedMoney = signedQuotes.reduce((acc, q) => acc + (Number(q.total_amount) || 0), 0)
+    const totalQuotes = initialQuotes.length;
+    const closeRate = totalQuotes > 0 ? (signedQuotes.length / totalQuotes) * 100 : 0;
 
     return (
         <div className="max-w-7xl mx-auto px-4 sm:px-8 py-8 sm:py-12">
-            
+
             {/* Header */}
             <div className="flex items-center justify-between mb-8 sm:mb-12">
                 <div>
@@ -31,28 +33,33 @@ export default function DashboardClient({ initialQuotes }: { initialQuotes: any[
                 </Link>
             </div>
 
-            {/* Stats Grid: 2x2 en móvil, 3 en PC */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-6 mb-10">
-                <StatCard 
-                    label="Ganado" 
-                    val={`${(earnedMoney / 1000000).toFixed(1)}M`} 
+            {/* Stats Grid: 2x2 en móvil, 4 en escritorio */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-10">
+                <StatCard
+                    label="Ganado"
+                    val={`${(earnedMoney / 1000000).toFixed(1)}M`}
                     sub={earnedMoney.toLocaleString('es-CO')}
-                    icon={TrendingUp} color="text-emerald-600" bg="bg-emerald-50" 
+                    icon={TrendingUp} color="text-emerald-600" bg="bg-emerald-50"
                 />
-                <StatCard 
-                    label="Pendiente" 
-                    val={`${(potentialMoney / 1000000).toFixed(1)}M`} 
+                <StatCard
+                    label="Pendiente"
+                    val={`${(potentialMoney / 1000000).toFixed(1)}M`}
                     sub={potentialMoney.toLocaleString('es-CO')}
-                    icon={DollarSign} color="text-blue-600" bg="bg-blue-50" 
+                    icon={DollarSign} color="text-cyan-600" bg="bg-cyan-50"
                 />
-                <div className="col-span-2 sm:col-span-1">
-                    <StatCard 
-                        label="Enviadas" 
-                        val={initialQuotes.length} 
-                        sub="Total propuestas"
-                        icon={FileText} color="text-slate-600" bg="bg-slate-100" 
-                    />
-                </div>
+                <StatCard
+                    label="Enviadas"
+                    val={totalQuotes}
+                    sub="Total propuestas"
+                    icon={FileText} color="text-slate-600" bg="bg-slate-100"
+                />
+                <StatCard
+                    label="Tasa Cierre"
+                    val={`${closeRate.toFixed(0)}%`}
+                    sub={`${signedQuotes.length} de ${totalQuotes} firmadas`}
+                    icon={CheckCircle2} // Asegúrate de importar CheckCircle2 de lucide-react
+                    color="text-violet-600" bg="bg-violet-50"
+                />
             </div>
 
             {/* Lista de Movimientos */}
@@ -63,8 +70,8 @@ export default function DashboardClient({ initialQuotes }: { initialQuotes: any[
 
                 <div className="divide-y divide-slate-50">
                     {initialQuotes.map((q) => (
-                        <div 
-                            key={q.id} 
+                        <div
+                            key={q.id}
                             onClick={() => setSelectedQuote(q)}
                             className="group flex items-center justify-between p-4 sm:px-8 sm:py-5 hover:bg-slate-50 transition-all cursor-pointer"
                         >
@@ -101,9 +108,9 @@ export default function DashboardClient({ initialQuotes }: { initialQuotes: any[
 
             {/* El Panel Lateral Interactivo */}
             {selectedQuote && (
-                <QuoteDetailSheet 
-                    quote={selectedQuote} 
-                    onClose={() => setSelectedQuote(null)} 
+                <QuoteDetailSheet
+                    quote={selectedQuote}
+                    onClose={() => setSelectedQuote(null)}
                 />
             )}
         </div>
@@ -136,9 +143,8 @@ function StatusBadge({ status, mini = false }: { status: string, mini?: boolean 
         </div>
     )
     return (
-        <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase border ${
-            isPending ? 'bg-orange-50 text-orange-600 border-orange-100' : 'bg-emerald-50 text-emerald-600 border-emerald-100'
-        }`}>
+        <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase border ${isPending ? 'bg-orange-50 text-orange-600 border-orange-100' : 'bg-emerald-50 text-emerald-600 border-emerald-100'
+            }`}>
             <CircleDot size={10} strokeWidth={3} className={isPending ? 'animate-pulse' : ''} />
             {isPending ? 'Pendiente' : 'Firmado'}
         </div>
