@@ -26,9 +26,9 @@ export default async function DashboardLayout({
                             <div className="bg-cyan-600 p-2 rounded-xl shadow-sm shadow-blue-100">
                                 <LayoutDashboard className="text-white" size={18} />
                             </div>
-                            <div className="flex items-center text-xl italic tracking-tighter select-none">
-                                <span className="font-bold text-slate-900">Flash</span>
-                                <span className="font-bold text-cyan-600">Per</span>
+                            <div className="flex items-center text-xl font-black italic tracking-tighter select-none">
+                                <span className="text-slate-600">Flash</span>
+                                <span className="text-cyan-600">Per</span>
                             </div>
                         </div>
 

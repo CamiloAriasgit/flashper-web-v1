@@ -25,7 +25,7 @@ export default function DashboardClient({ initialQuotes }: { initialQuotes: any[
                 </div>
                 <Link
                     href="/dashboard/new-quote"
-                    className="flex items-center justify-center gap-2 bg-slate-900 hover:bg-blue-600 text-white px-4 py-2.5 sm:px-6 sm:py-3 rounded-2xl font-semibold shadow-xl shadow-slate-200 transition-all active:scale-95 text-sm"
+                    className="flex items-center justify-center gap-2 bg-slate-900 hover:bg-slate-600 text-white px-4 py-2.5 sm:px-6 sm:py-3 rounded-2xl font-semibold shadow-xl shadow-slate-200 transition-all active:scale-95 text-sm"
                 >
                     <Plus size={18} /> <span className="hidden sm:inline">Nueva Cotización</span>
                 </Link>
