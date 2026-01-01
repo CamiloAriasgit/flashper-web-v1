@@ -2,15 +2,14 @@
 'use server'
 
 import { createClient } from '@/utils/supabase/server'
-import { createClient as createSupabaseClient } from '@supabase/supabase-js'
+// import { createClient as createSupabaseClient } from '@supabase/supabase-js' // Comentado temporalmente
 import { redirect } from 'next/navigation'
-import { Resend } from 'resend'
+// import { Resend } from 'resend' // Comentado temporalmente
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+// const resend = new Resend(process.env.RESEND_API_KEY) // Comentado temporalmente
 
 /**
  * REGISTRO DE USUARIOS
- * Crea Auth, Organización y Perfil vinculado
  */
 export async function signup(formData: FormData) {
   const supabase = await createClient()
@@ -19,7 +18,6 @@ export async function signup(formData: FormData) {
   const password = formData.get('password') as string
   const orgName = formData.get('orgName') as string
 
-  // 1. Crear el usuario en Auth
   const { data: authData, error: authError } = await supabase.auth.signUp({
     email,
     password,
@@ -30,7 +28,6 @@ export async function signup(formData: FormData) {
     return redirect('/register?error=auth-failed')
   }
 
-  // 2. Crear la Organización
   const { data: orgData, error: orgError } = await supabase
     .from('organizations')
     .insert([{ name: orgName }])
@@ -42,7 +39,6 @@ export async function signup(formData: FormData) {
     return redirect('/register?error=org-failed')
   }
 
-  // 3. Crear el Perfil vinculado
   const { error: profileError } = await supabase.from('profiles').insert([
     {
       id: authData.user.id,
@@ -62,12 +58,12 @@ export async function signup(formData: FormData) {
 
 /**
  * FIRMA DE COTIZACIÓN
- * Actualiza estado y envía notificaciones (Telegram/Make y Email)
+ * Se enfoca solo en la lógica de base de datos para asegurar el ROI
  */
 export async function signQuote(quoteId: string) {
   const supabase = await createClient()
 
-  // 1. Actualizar estado de la cotización
+  // 1. Actualizar estado de la cotización (Prioridad #1)
   const { data: quote, error: updateError } = await supabase
     .from('quotes')
     .update({ status: 'signed' })
@@ -80,7 +76,7 @@ export async function signQuote(quoteId: string) {
     return { success: false }
   }
 
-  // 2. NOTIFICACIÓN A TELEGRAM (Vía Make Webhook)
+  /* // 2. NOTIFICACIÓN A TELEGRAM (Comentado temporalmente)
   try {
     await fetch('https://hook.us2.make.com/vhb6ce9sdir7g7kj6f88x8radgxdy', {
       method: 'POST',
@@ -95,8 +91,10 @@ export async function signQuote(quoteId: string) {
   } catch (e) {
     console.error("Error enviando a Make/Telegram:", e);
   }
+  */
 
-  // 3. NOTIFICACIÓN POR EMAIL (Opcional/Backup)
+  /*
+  // 3. NOTIFICACIÓN POR EMAIL (Comentado temporalmente)
   try {
     const supabaseAdmin = createSupabaseClient(
         process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -118,22 +116,14 @@ export async function signQuote(quoteId: string) {
           from: 'FlashPer <onboarding@resend.dev>',
           to: ownerEmail,
           subject: `✅ Cotización Firmada - ${quote.client_name}`,
-          html: `
-            <div style="font-family: sans-serif; max-width: 500px; margin: auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 12px;">
-              <h2 style="color: #0f172a;">¡Firma recibida!</h2>
-              <p style="color: #475569;">Tu cliente <strong>${quote.client_name}</strong> ha firmado la propuesta.</p>
-              <div style="background: #f8fafc; padding: 15px; border-radius: 8px; margin: 20px 0;">
-                <p style="margin: 0; color: #64748b; font-size: 12px;">VALOR TOTAL</p>
-                <p style="margin: 5px 0 0 0; font-size: 24px; font-weight: bold; color: #2563eb;">$${quote.total_amount.toLocaleString('es-CO')}</p>
-              </div>
-            </div>
-          `
+          html: `<h1>Firma recibida</h1><p>Cliente: ${quote.client_name}</p>`
         })
       }
     }
   } catch (err) {
     console.error("Error en proceso de email:", err)
   }
+  */
 
   return { success: true }
 }
