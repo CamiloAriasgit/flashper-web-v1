@@ -2,6 +2,7 @@
 'use server'
 
 import { createClient } from '@/utils/supabase/server'
+import { createClient as createSupabaseClient } from '@supabase/supabase-js' // Importación directa para el cliente admin
 import { redirect } from 'next/navigation'
 import { Resend } from 'resend'
 
@@ -18,7 +19,6 @@ export async function signup(formData: FormData) {
   const password = formData.get('password') as string
   const orgName = formData.get('orgName') as string
 
-  // 1. Crear el usuario en Auth
   const { data: authData, error: authError } = await supabase.auth.signUp({
     email,
     password,
@@ -29,7 +29,6 @@ export async function signup(formData: FormData) {
     return redirect('/register?error=auth-failed')
   }
 
-  // 2. Crear la Organización
   const { data: orgData, error: orgError } = await supabase
     .from('organizations')
     .insert([{ name: orgName }])
@@ -41,7 +40,6 @@ export async function signup(formData: FormData) {
     return redirect('/register?error=org-failed')
   }
 
-  // 3. Crear el Perfil vinculado
   const { error: profileError } = await supabase.from('profiles').insert([
     {
       id: authData.user.id,
@@ -61,20 +59,17 @@ export async function signup(formData: FormData) {
 
 /**
  * FIRMA DE COTIZACIÓN
- * Actualiza estado y envía notificación por email
+ * Actualiza estado y envía notificación por email usando Service Role
  */
 export async function signQuote(quoteId: string) {
+  // 1. Cliente normal para la actualización
   const supabase = await createClient()
 
-  // 1. Actualizar estado y traer datos para el correo
   const { data: quote, error: updateError } = await supabase
     .from('quotes')
     .update({ status: 'signed' })
     .eq('id', quoteId)
-    .select(`
-        *,
-        organizations (name)
-    `)
+    .select(`*, organizations (name)`)
     .single()
 
   if (updateError || !quote) {
@@ -82,8 +77,14 @@ export async function signQuote(quoteId: string) {
     return { success: false }
   }
 
-  // 2. Intentar enviar notificación (no bloqueante)
+  // 2. Intentar enviar notificación con Cliente Admin
   try {
+    // Creamos el cliente con la Service Role Key para saltar restricciones de privacidad
+    const supabaseAdmin = createSupabaseClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.SUPABASE_SERVICE_ROLE_KEY! // ¡Esta es la clave maestra!
+    )
+
     const { data: profile } = await supabase
       .from('profiles')
       .select('id')
@@ -91,7 +92,11 @@ export async function signQuote(quoteId: string) {
       .single()
 
     if (profile) {
-      const { data: authUser } = await supabase.auth.admin.getUserById(profile.id)
+      // Ahora sí tendremos permiso para obtener el email
+      const { data: authUser, error: authError } = await supabaseAdmin.auth.admin.getUserById(profile.id)
+      
+      if (authError) throw authError;
+
       const ownerEmail = authUser.user?.email
 
       if (ownerEmail) {
@@ -114,7 +119,7 @@ export async function signQuote(quoteId: string) {
       }
     }
   } catch (err) {
-    console.error("Error enviando email:", err)
+    console.error("Error en el proceso de notificación:", err)
   }
 
   return { success: true }
