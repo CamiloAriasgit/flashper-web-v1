@@ -29,7 +29,7 @@ export default function DashboardClientLayout({
                         </span>
                     </div>
 
-                    <form action="/auth/signout" method="post" className="hidden sm:block">
+                    <form action="/register" method="post" className="hidden sm:block">
                         <button className="p-2 text-slate-400 hover:text-red-500 transition-colors">
                             <LogOut size={20} strokeWidth={1.5} />
                         </button>
@@ -37,7 +37,7 @@ export default function DashboardClientLayout({
 
                     <button 
                         onClick={() => setIsMobileMenuOpen(true)}
-                        className="sm:hidden p-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+                        className="sm:hidden p-2 text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors"
                     >
                         <Menu size={24} />
                     </button>

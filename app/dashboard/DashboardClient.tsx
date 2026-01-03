@@ -73,7 +73,7 @@ export default function DashboardClient({ initialQuotes }: { initialQuotes: any[
                         <div
                             key={q.id}
                             onClick={() => setSelectedQuote(q)}
-                            className="group flex items-center justify-between p-4 sm:px-8 sm:py-5 hover:bg-slate-50 transition-all cursor-pointer"
+                            className="group flex items-center justify-between p-4 sm:px-8 sm:py-5 hover:bg-slate-100 transition-all cursor-pointer"
                         >
                             <div className="flex items-center gap-3 sm:gap-4 overflow-hidden">
                                 <div className="hidden sm:flex w-10 h-10 rounded-full bg-slate-50 text-slate-400 items-center justify-center font-bold text-xs border border-slate-100 group-hover:bg-white transition-colors">
@@ -121,8 +121,8 @@ function StatCard({ label, val, sub, icon: Icon, color, bg }: any) {
     return (
         <div className="bg-white p-4 sm:p-6 rounded-[1.5rem] border border-slate-200/60 shadow-[0_2px_10px_rgba(0,0,0,0.02)] flex flex-col justify-between h-full group hover:shadow-lg transition-all">
             <div className="flex items-center justify-between mb-4">
-                <div className={`w-8 h-8 sm:w-10 sm:h-10 ${bg} ${color} rounded-xl flex items-center justify-center`}>
-                    <Icon size={18} strokeWidth={2} />
+                <div className={`w-8 h-8 sm:w-10 sm:h-10 ${bg} ${color} rounded-xl flex items-center group hover:shadow-lg transition-all justify-center`}>
+                    <Icon size={18} strokeWidth={2}/>
                 </div>
                 <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">{label}</span>
             </div>

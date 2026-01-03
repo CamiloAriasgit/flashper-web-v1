@@ -66,7 +66,7 @@ export default function SidebarNavigation({ isMobileMenuOpen, setIsMobileMenuOpe
                             {/* CAMBIO AQUÍ: Nombre de la empresa con icono */}
                             <div className="flex items-center gap-2 px-3 py-1.5 bg-slate-50 border border-slate-100 rounded-xl">
                         <Building2 size={14} className="text-slate-400" />
-                        <span className="text-[11px] font-bold text-slate-600 uppercase tracking-tight">
+                        <span className="text-[11px] font-bold text-slate-600 uppercase truncate tracking-tight">
                             {orgName} {/* Aquí ya llegará el nombre real */}
                         </span>
                     </div>
