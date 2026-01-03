@@ -33,7 +33,7 @@ export default async function CustomersPage() {
     const customers = Object.values(customersMap || {})
 
     return (
-        <div className="max-w-7xl mx-auto px-4 sm:px-8 py-4 sm:py-6">
+        <div className="max-w-7xl mx-auto sm:px-8">
             <header className="mb-6">
                 <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight text-balance">Directorio de Clientes</h1>
                 <p className="text-slate-500 text-sm mt-1">Historial acumulado por cliente.</p>
@@ -41,7 +41,7 @@ export default async function CustomersPage() {
 
             <div className="grid gap-4">
                 {customers.map((customer: any) => (
-                    <details key={customer.email} className="group bg-white border border-slate-200 rounded-[2rem] overflow-hidden transition-all hover:border-cyan-200">
+                    <details key={customer.email} className="group bg-white border border-slate-200 rounded-[2rem] overflow-hidden transition-all hover:shadow-lg">
                         <summary className="flex items-center justify-between p-6 cursor-pointer list-none">
                             <div className="flex items-center gap-4">
                                 <div className="w-12 h-12 bg-slate-100 rounded-2xl flex items-center justify-center text-slate-400 group-open:bg-cyan-600 group-open:text-white transition-colors">

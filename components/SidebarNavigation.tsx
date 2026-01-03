@@ -1,20 +1,15 @@
 'use client'
 
-import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { 
-  LayoutDashboard, 
-  Users, 
-  LogOut, 
-  Menu, 
-  X, 
-  Building2,
-  Zap 
-} from 'lucide-react'
+import { LayoutDashboard, Users, X, LogOut } from 'lucide-react'
 
-export default function SidebarNavigation({ orgName }: { orgName: string }) {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+interface SidebarProps {
+  isMobileMenuOpen: boolean;
+  setIsMobileMenuOpen: (open: boolean) => void;
+}
+
+export default function SidebarNavigation({ isMobileMenuOpen, setIsMobileMenuOpen }: SidebarProps) {
   const pathname = usePathname()
 
   const navItems = [
@@ -22,95 +17,57 @@ export default function SidebarNavigation({ orgName }: { orgName: string }) {
     { label: 'Clientes', href: '/dashboard/customers', icon: Users },
   ]
 
-  const NavContent = () => (
-    <div className="flex flex-col h-full py-6 px-4">
-      {/* Logotipo */}
-      <div className="flex items-center gap-2.5 px-3 mb-10">
-        
-        <div className="flex items-center text-2xl font-black italic tracking-tighter">
-          <span className="text-slate-600">Flash</span>
-          <span className="text-cyan-600">Per</span>
-        </div>
+  const NavLinks = () => (
+    <nav className="flex flex-col h-full gap-2 p-4">
+      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-2 px-4">Menú</p>
+      <div className="flex-1">
+          {navItems.map((item) => {
+            const isActive = pathname === item.href
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={() => setIsMobileMenuOpen(false)}
+                className={`flex items-center gap-3 px-4 py-3 rounded-2xl font-bold text-sm transition-all mb-1 ${
+                  isActive 
+                  ? 'bg-slate-200 text-slate-600' 
+                  : 'text-slate-400 hover:bg-slate-100 hover:text-slate-600'
+                }`}
+              >
+                <item.icon size={18} strokeWidth={isActive ? 2.5 : 2} />
+                {item.label}
+              </Link>
+            )
+          })}
       </div>
 
-      {/* Info de Organización (Desktop) */}
-      <div className="hidden lg:flex items-center gap-2 px-4 py-3 mb-6 bg-slate-50 border border-slate-100 rounded-2xl">
-        <Building2 size={14} className="text-slate-400" />
-        <span className="text-xs font-bold text-slate-600 truncate">{orgName}</span>
-      </div>
-
-      {/* Enlaces */}
-      <nav className="flex-1 space-y-2">
-        {navItems.map((item) => {
-          const isActive = pathname === item.href
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              onClick={() => setIsMobileMenuOpen(false)}
-              className={`flex items-center gap-3 px-4 py-3.5 rounded-2xl font-bold text-sm transition-all ${
-                isActive 
-                ? 'bg-slate-900 text-white' 
-                : 'text-slate-400 hover:bg-slate-100 hover:text-slate-600'
-              }`}
-            >
-              <item.icon size={20} strokeWidth={isActive ? 2.5 : 2} />
-              {item.label}
-            </Link>
-          )
-        })}
-      </nav>
-
-      {/* Botón Salir */}
+      {/* Botón Cerrar Sesión en el Menú (Útil para móvil) */}
       <div className="pt-4 border-t border-slate-100">
         <form action="/auth/signout" method="post">
-          <button className="flex items-center gap-3 px-4 py-3 w-full text-slate-400 hover:text-red-500 font-bold text-sm transition-colors group">
-            <LogOut size={20} className="group-hover:-translate-x-1 transition-transform" />
-            Cerrar Sesión
-          </button>
+            <button className="flex items-center gap-3 px-4 py-3 w-full text-slate-400 hover:text-red-500 font-bold text-sm transition-colors">
+                <LogOut size={18} />
+                Cerrar Sesión
+            </button>
         </form>
       </div>
-    </div>
+    </nav>
   )
 
   return (
     <>
-      {/* SIDEBAR ESCRITORIO */}
-      <aside className="hidden lg:block w-72 border-r border-slate-200 bg-white sticky top-0 h-screen">
-        <NavContent />
+      <aside className="hidden lg:block w-64 border-r border-slate-200 bg-white h-[calc(100vh-64px)] sticky top-16">
+        <NavLinks />
       </aside>
 
-      {/* HEADER MÓVIL */}
-      <header className="lg:hidden flex items-center justify-between p-4 bg-white/80 backdrop-blur-md border-b border-slate-200 sticky top-0 z-[60]">
-        <div className="flex items-center gap-2">
-            <div className="bg-cyan-600 p-1.5 rounded-lg">
-                <Zap className="text-white" size={16} fill="currentColor" />
-            </div>
-            <span className="font-black text-slate-900 tracking-tighter">FlashPer</span>
-        </div>
-        <button 
-          onClick={() => setIsMobileMenuOpen(true)}
-          className="p-2 bg-slate-50 rounded-xl text-slate-600"
-        >
-          <Menu size={24} />
-        </button>
-      </header>
-
-      {/* OVERLAY & MENÚ MÓVIL */}
       {isMobileMenuOpen && (
         <div className="fixed inset-0 z-[100] lg:hidden">
-          <div 
-            className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm"
-            onClick={() => setIsMobileMenuOpen(false)}
-          />
+          <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onClick={() => setIsMobileMenuOpen(false)} />
           <div className="absolute inset-y-0 left-0 w-[280px] bg-white shadow-2xl animate-in slide-in-from-left duration-300">
-            <button 
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="absolute top-5 right-4 p-2 text-slate-400"
-            >
-              <X size={24} />
-            </button>
-            <NavContent />
+            <div className="p-6 flex justify-between items-center border-b border-slate-50">
+              <span className="font-black text-slate-900 tracking-tighter text-xl">FlashPer</span>
+              <button onClick={() => setIsMobileMenuOpen(false)} className="text-slate-400 p-1"><X size={24} /></button>
+            </div>
+            <NavLinks />
           </div>
         </div>
       )}
