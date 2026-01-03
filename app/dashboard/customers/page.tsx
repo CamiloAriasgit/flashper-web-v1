@@ -37,7 +37,7 @@ export default async function CustomersPage() {
                 <p className="text-slate-500 text-sm mt-1">Historial y métricas acumuladas por cliente.</p>
             </header>
 
-            <div className="grid gap-4 px-2 sm:px-0">
+            <div className="grid gap-4">
                 {customers.map((customer: any) => (
                     <details key={customer.email} className="group bg-white border border-slate-200 rounded-[1.5rem] sm:rounded-[2rem] overflow-hidden transition-all hover:shadow-md">
                         <summary className="flex items-center justify-between p-4 sm:p-6 cursor-pointer list-none">

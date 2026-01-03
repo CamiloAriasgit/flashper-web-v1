@@ -37,7 +37,7 @@ export default async function PublicQuotePage({
     const isPending = quote.status === 'pending'
 
     return (
-        <div className="min-h-screen bg-[#F8FAFC] text-slate-900 selection:bg-cyan-100 flex flex-col items-center py-10 px-4 sm:py-20">
+        <div className="min-h-screen bg-[#F8FAFC] text-slate-900 selection:bg-cyan-100 flex flex-col items-center py-10 px-2 sm:py-20">
             
             {/* Badge de Seguridad Superior */}
             <div className="flex items-center gap-2 mb-8 bg-white px-4 py-2 rounded-full border border-slate-200 shadow-sm transition-all hover:shadow-md">
@@ -136,7 +136,7 @@ export default async function PublicQuotePage({
                                 <button type="submit" className="w-full bg-cyan-600 hover:bg-cyan-700 text-white py-5 rounded-[1.5rem] font-bold transition-all active:scale-[0.98] flex items-center justify-center gap-3 group shadow-xl shadow-cyan-100 overflow-hidden relative">
                                     <div className="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
                                     <Fingerprint size={22} strokeWidth={2.5} />
-                                    <span className="relative">Firmar y Aceptar Propuesta</span>
+                                    <span className="relative">Firmar y Aceptar</span>
                                     <ArrowRight size={18} className="relative group-hover:translate-x-1 transition-transform" />
                                 </button>
                                 <p className="text-center text-[10px] text-slate-400 mt-4 font-medium italic">
