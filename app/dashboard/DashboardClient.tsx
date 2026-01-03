@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { Plus, DollarSign, FileText, CircleDot,CheckCircle2, TrendingUp, ArrowUpRight } from 'lucide-react'
+import { Plus, DollarSign, FileText, CircleDot,CheckCircle2, TrendingUp, ArrowUpRight, Clock } from 'lucide-react'
 import QuoteDetailSheet from '@/components/QuoteDetailSheet'
 
 export default function DashboardClient({ initialQuotes }: { initialQuotes: any[] }) {
@@ -64,8 +64,11 @@ export default function DashboardClient({ initialQuotes }: { initialQuotes: any[
 
             {/* Lista de Movimientos */}
             <div className="bg-white rounded-[2rem] border border-slate-200/50 shadow-sm overflow-hidden">
-                <div className="px-6 py-5 border-b border-slate-50 flex items-center justify-between">
-                    <h2 className="text-sm font-bold text-slate-400 uppercase tracking-widest">Actividad Reciente</h2>
+                <div className="px-6 py-3 flex items-center justify-center">
+                    <div className='bg-slate-100 flex items-center justify-center py-1 text-slate-400 gap-3 px-2 rounded-4xl'>
+                        <Clock size={16} />
+                        <h2 className="text-sm font-bold uppercase tracking-widest">Actividad Reciente</h2>
+                    </div>
                 </div>
 
                 <div className="divide-y divide-slate-50">
